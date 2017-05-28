@@ -1,18 +1,5 @@
 package com.github.tonivade.buildtiful
 
-import io.circe._
-import io.circe.generic.auto._
-import io.circe.yaml._
-
-case class Build(project: Project, source: Seq[String], plugins: Seq[String], 
-                 repositories: Seq[Repository], dependencies: Dependencies, build: Seq[String])
-
-case class Project(groupId: String, artifactId: String, version: String)
-
-case class Repository(id: String, url: String)
-
-case class Dependencies(compile: Seq[String], test: Seq[String])
-
 trait Builder[P[_]] {
   def read(file: String): P[Build]
   def clean(build: Build): P[Unit]
@@ -27,19 +14,22 @@ object Builder {
   def apply[P[_]](implicit Builder: Builder[P]) = Builder
 
   object Syntax {
-    def read[P[_]](file: String)(implicit Builder: Builder[P]) = Builder.read(file)
-    def download[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.download(build)
-    def clean[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.clean(build)
-    def compile[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.compile(build)
-    def test[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.test(build)
-    def makepkg[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.makepkg(build)
-    def deploy[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.deploy(build)
+    def read[P[_]](file: String)(implicit B: Builder[P]) = B.read(file)
+    def download[P[_]](build: Build)(implicit B: Builder[P]) = B.download(build)
+    def clean[P[_]](build: Build)(implicit B: Builder[P]) = B.clean(build)
+    def compile[P[_]](build: Build)(implicit B: Builder[P]) = B.compile(build)
+    def test[P[_]](build: Build)(implicit B: Builder[P]) = B.test(build)
+    def makepkg[P[_]](build: Build)(implicit B: Builder[P]) = B.makepkg(build)
+    def deploy[P[_]](build: Build)(implicit B: Builder[P]) = B.deploy(build)
   }
 }
 
 object BuilderInterpreter {
   import cats.{Id, Monad}
   import cats.implicits._
+  import io.circe._
+  import io.circe.generic.auto._
+  import io.circe.yaml._
   import io.circe.yaml.parser
   import scala.io.Source
 

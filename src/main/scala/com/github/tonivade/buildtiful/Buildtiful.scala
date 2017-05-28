@@ -1,10 +1,13 @@
 package com.github.tonivade.buildtiful
 
-import cats.Id
-import BuilderInterpreter.BuilderInstance
+import BuilderInterpreter._
+import BuilderProgram._
 
 object Buildtiful {
   def main(args: Array[String]) {
-    BuilderProgram.build[Id](args(0))
+    args.headOption match {
+      case Some(file) => build(file)
+      case _ => println("invalid arguments")
+    }
   }
 }
