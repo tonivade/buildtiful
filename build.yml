@@ -10,6 +10,12 @@ repositories:
   - id: ossrh
     url: 'https://oss.sonatype.org/content/repositories/snapshots'
 
+source:
+  - "src/main/java"
+  - "src/main/resources"
+  - "src/test/java"
+  - "src/test/resources"
+
 dependencies:
   compile:
     - 'com.github.tonivade:resp-server:0.6.0'

@@ -46,10 +46,10 @@ object BuilderInterpreter {
   implicit object BuilderInstance extends Builder[Id] {
     def read(file: String) = {
       val yamlString = Source.fromFile(file).mkString
-      println(yamlString)
-      Build(Project("com.lastminute", "test", "0.1.0"), Array("src/main/java"),
-          Array("java"), Array(Repository("maven", "http://repo1.maven.org/maven2")),
-          Dependencies(Array("dep1"), Array("junit:junit:4.12")), Array("clean", "compile", "test"))
+      val json = parser.parse(yamlString)
+      println(json)
+      // TODO: do not throw exceptions
+      json.leftMap(err => err: Error).flatMap(_.as[Build]).valueOr(throw _)
     }
     def download(build: Build) = println("download")
     def clean(build: Build) = println("clean")
