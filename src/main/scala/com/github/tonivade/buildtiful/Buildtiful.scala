@@ -1,79 +1,10 @@
 package com.github.tonivade.buildtiful
 
-import io.circe._
-import io.circe.generic.auto._
-import io.circe.yaml._
-
-case class Build(project: Project, source: Seq[String], plugins: Seq[String], 
-                 repositories: Seq[Repository], dependencies: Dependencies, build: Seq[String])
-
-case class Project(groupId: String, artifactId: String, version: String)
-
-case class Repository(id: String, url: String)
-
-case class Dependencies(compile: Seq[String], test: Seq[String])
-
-trait Builder[P[_]] {
-  def read(file: String): P[Build]
-  def download(build: Build): P[Unit]
-  def compile(build: Build): P[Unit]
-  def test(build: Build): P[Unit]
-  def makepkg(build: Build): P[Unit]
-  def deploy(build: Build): P[Unit]
-}
-
-object Builder {
-  def apply[P[_]](implicit Builder: Builder[P]) = Builder
-
-  object Syntax {
-    def read[P[_]](file: String)(implicit Builder: Builder[P]) = Builder.read(file)
-    def download[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.download(build)
-    def compile[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.compile(build)
-    def test[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.test(build)
-    def makepkg[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.makepkg(build)
-    def deploy[P[_]](build: Build)(implicit Builder: Builder[P]) = Builder.deploy(build)
-  }
-}
-
-object BuilderInstantiation {
-  import cats.{Id, Monad}
-  import cats.implicits._
-  import io.circe.yaml.parser
-  import scala.io.Source
-
-  implicit object BuilderInstance extends Builder[Id] {
-    def read(file: String) = {
-      val yamlString = Source.fromFile(file).mkString
-      parser.parse(yamlString)
-    }
-    def download(build: Build) = println("download")
-    def compile(build: Build) = println("compile")
-    def test(build: Build) = println("test")
-    def makepkg(build: Build) = println("makepkg")
-    def deploy(build: Build) = println("deploy")
-  }
-
-  implicit object IdMonad extends Monad[Id] {
-    def pure[A](a: A): Id[A] = a
-    def flatMap[A,B](p: Id[A])(f: A => Id[B]): Id[B] = f(p)
-    // TBD
-    def tailRecM[A, B](a: A)(f: A => Either[A, B]): B = ???
-  }
-}
+import cats.Id
+import BuilderInterpreter.BuilderInstance
 
 object Buildtiful {
   def main(args: Array[String]) {
-    import cats.Monad
-    import cats.implicits._
-    import Builder.Syntax._
-
-    for {
-      build <- read(args(0))
-      _     <- download(build)
-      _     <- compile(build)
-      _     <- test(build)
-      _     <- makepkg(build)
-      _     <- deploy(build)
-    } yield ()
+    BuilderProgram.build[Id](args(0))
   }
 }
