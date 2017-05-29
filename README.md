@@ -7,6 +7,14 @@ Building tool of my dreams. IMHO existing tools like maven, gradle or sbt are to
     artifactId: test
     version: 0.1.0-SNAPSHOT
 
+  sources:
+    main:
+      - 'src/main/java'"
+      - 'src/main/resources'"
+    test:
+      - 'src/test/java'"
+      - 'src/test/resources'"
+
   plugins:
     - java
 
