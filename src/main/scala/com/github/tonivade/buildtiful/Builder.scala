@@ -27,26 +27,23 @@ object Builder {
 object BuilderInterpreter {
   import cats.{Id, Monad}
   import cats.implicits._
-  import io.circe._
-  import io.circe.generic.auto._
-  import io.circe.yaml._
-  import io.circe.yaml.parser
-  import scala.io.Source
+  
+  val parser = new YamlParser()
+  val downloader = new IvyDownloader()
+  val cleaner = new DefaultCleaner()
+  val compiler = new DefaultCompiler()
+  val tester = new DefaultTester()
+  val packager = new DefaultPackager()
+  val deployer = new MavenDeployer()
 
   implicit object BuilderInstance extends Builder[Id] {
-    def read(file: String) = {
-      val yamlString = Source.fromFile(file).mkString
-      val json = parser.parse(yamlString)
-      println(json)
-      // TODO: do not throw exceptions
-      json.leftMap(err => err: Error).flatMap(_.as[Build]).valueOr(throw _)
-    }
-    def download(build: Build) = println("download")
-    def clean(build: Build) = println("clean")
-    def compile(build: Build) = println("compile")
-    def test(build: Build) = println("test")
-    def makepkg(build: Build) = println("makepkg")
-    def deploy(build: Build) = println("deploy")
+    def read(file: String) = parser.parse(file)
+    def download(build: Build) = downloader.download(build)
+    def clean(build: Build) = cleaner.clean(build)
+    def compile(build: Build) = compiler.compile(build)
+    def test(build: Build) = tester.test(build)
+    def makepkg(build: Build) = packager.makepkg(build)
+    def deploy(build: Build) = deployer.deploy(build)
   }
 }
 
