@@ -12,7 +12,7 @@ Building tool of my dreams. IMHO existing tools like maven, gradle or sbt are to
       - 'src/main/java'
       - 'src/main/resources'
     test:
-      - 'src/test/java'"
+      - 'src/test/java'
       - 'src/test/resources'
 
   plugins:
