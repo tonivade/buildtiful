@@ -11,6 +11,7 @@ import org.apache.ivy.core.module.id.ModuleRevisionId
 import org.apache.ivy.core.module.descriptor.DefaultModuleDescriptor
 import org.apache.ivy.core.report.ResolveReport
 import org.apache.ivy.core.module.descriptor.DefaultDependencyDescriptor
+import org.apache.ivy.core.module.descriptor.DependencyDescriptor
 
 trait Downloader {
   def download(build: Build) : Unit
@@ -36,6 +37,10 @@ class IvyDownloader extends Downloader {
   def download(build: Build) {
     println("download")
 
+    retrieve(resolve(createModuleDescriptor(build)))
+  }
+  
+  def createModuleDescriptor(build: Build) : DefaultModuleDescriptor = {
     val moduleDescriptor = DefaultModuleDescriptor.newDefaultInstance(
         ModuleRevisionId.newInstance(
             build.project.groupId, 
@@ -43,8 +48,20 @@ class IvyDownloader extends Downloader {
             build.project.version
         )                        
     )
-
-    val dependencies = build.dependencies.compile.map(dep => {
+    
+    val dependencies = 
+      createDependencies(moduleDescriptor, build.dependencies.compile) ++ 
+      createDependencies(moduleDescriptor, build.dependencies.test)
+    
+    for {
+      dep <- dependencies
+    } yield moduleDescriptor.addDependency(dep)
+    
+    moduleDescriptor
+  }
+  
+  def createDependencies(moduleDescriptor: ModuleDescriptor, deps: Seq[String]) : Seq[DependencyDescriptor] = {
+    deps.map(dep => {
       val dependency = dep.split(":")
       val revisionId = ModuleRevisionId.newInstance(dependency(0), dependency(1), dependency(2))
 
@@ -54,23 +71,24 @@ class IvyDownloader extends Downloader {
       
       dependencyDescriptor
     })
-    
-    for {
-      dep <- dependencies
-    } yield moduleDescriptor.addDependency(dep)
-
+  }
+  
+  def resolve(moduleDescriptor: ModuleDescriptor) : ResolveReport = {
     val resolverOptions = new ResolveOptions();
     resolverOptions.setTransitive(true);
     resolverOptions.setDownload(true);
-    val ResolveReport = ivy.resolve(moduleDescriptor, resolverOptions);
-    if (ResolveReport.hasError()) {
-        throw new RuntimeException(ResolveReport.getAllProblemMessages().toString());
+    val resolveReport = ivy.resolve(moduleDescriptor, resolverOptions);
+    if (resolveReport.hasError()) {
+        throw new RuntimeException(resolveReport.getAllProblemMessages().toString());
     }
-
-    val module = ResolveReport.getModuleDescriptor()
+    resolveReport
+  }
+  
+  def retrieve(resolveReport: ResolveReport) {
+    val module = resolveReport.getModuleDescriptor()
     val retrieverOptions = new RetrieveOptions().setConfs(Array[String]("default"))
     val target = new File("target/libs")
-
+    
     ivy.retrieve(
         module.getModuleRevisionId(),
         target.getAbsolutePath() + "/[artifact](-[classifier]).[ext]",
