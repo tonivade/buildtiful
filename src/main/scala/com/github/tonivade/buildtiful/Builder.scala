@@ -55,8 +55,8 @@ object BuilderProgram {
   def build[P[_]: Builder: Monad](file: String): P[Unit] = {
     for {
       build <- read(file)
-      _     <- download(build)
       _     <- clean(build)
+      _     <- download(build)
       _     <- compile(build)
       _     <- test(build)
       _     <- makepkg(build)

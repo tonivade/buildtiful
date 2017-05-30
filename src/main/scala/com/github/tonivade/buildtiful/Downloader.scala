@@ -37,10 +37,10 @@ class IvyDownloader extends Downloader {
   def download(build: Build) {
     println("download")
 
-    retrieve(resolve(createModuleDescriptor(build)))
+    createModuleDescriptor(build).map(resolve(_)).map(retrieve(_))
   }
   
-  def createModuleDescriptor(build: Build) : DefaultModuleDescriptor = {
+  def createModuleDescriptor(build: Build) : Option[ModuleDescriptor] = {
     val moduleDescriptor = DefaultModuleDescriptor.newDefaultInstance(
         ModuleRevisionId.newInstance(
             build.project.groupId, 
@@ -57,7 +57,7 @@ class IvyDownloader extends Downloader {
       dep <- dependencies
     } yield moduleDescriptor.addDependency(dep)
     
-    moduleDescriptor
+    Some(moduleDescriptor)
   }
   
   def createDependencies(moduleDescriptor: ModuleDescriptor, deps: Seq[String]) : Seq[DependencyDescriptor] = {
@@ -74,12 +74,12 @@ class IvyDownloader extends Downloader {
   }
   
   def resolve(moduleDescriptor: ModuleDescriptor) : ResolveReport = {
-    val resolverOptions = new ResolveOptions();
-    resolverOptions.setTransitive(true);
-    resolverOptions.setDownload(true);
-    val resolveReport = ivy.resolve(moduleDescriptor, resolverOptions);
+    val resolverOptions = new ResolveOptions()
+    resolverOptions.setTransitive(true)
+    resolverOptions.setDownload(true)
+    val resolveReport = ivy.resolve(moduleDescriptor, resolverOptions)
     if (resolveReport.hasError()) {
-        throw new RuntimeException(resolveReport.getAllProblemMessages().toString());
+        throw new RuntimeException(resolveReport.getAllProblemMessages().toString())
     }
     resolveReport
   }
