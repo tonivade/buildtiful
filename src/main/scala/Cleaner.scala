@@ -10,7 +10,7 @@ class DefaultCleaner extends Cleaner {
   def clean(build: Build) {
     println("clean")
     
-    val target = new File("target/buildtiful")
+    val target = new File("example/target")
     
     if (target.exists()) target.delete();
   }

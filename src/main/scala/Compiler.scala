@@ -13,7 +13,7 @@ trait Compiler {
 class DefaultCompiler extends Compiler {
   val project : AntProject = {
     val project = new AntProject()
-    project.setBaseDir(new File("target/buildtiful"));
+    project.setBaseDir(new File("example"));
     project.init() 
     project
   }
@@ -31,7 +31,7 @@ class DefaultCompiler extends Compiler {
     build.sources.test.map(src => new Path(project, src)).map(javac.setSrcdir(_))
     
     val classpath = new Path(project)
-    classpath.setPath("target/buildtiful/libs")
+    classpath.setPath("example/libs")
     javac.setClasspath(classpath)
     
     javac

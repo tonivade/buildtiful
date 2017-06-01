@@ -4,4 +4,6 @@ target
 .project
 .classpath
 .settings
-ivy
+example/target
+example/ivy
+example/libs
