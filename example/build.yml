@@ -13,16 +13,15 @@ repositories:
 sources:
   main:
     - "src/main/java"
-    - "src/main/resources"
   test:
     - "src/test/java"
-    - "src/test/resources"
 
 dependencies:
   compile:
     - 'com.github.tonivade:resp-server:0.6.0'
   test:
     - 'junit:junit:4.12'
+    - 'org.hamcrest:hamcrest-all:1.3'
 
 build:
   - clean

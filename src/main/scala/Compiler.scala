@@ -5,6 +5,7 @@ import org.apache.tools.ant.taskdefs.Javac
 import org.apache.tools.ant.types.Path
 import org.apache.tools.ant.{Project => AntProject}
 import java.io.File
+import org.apache.tools.ant.types.FileSet
 
 trait Compiler {
   def compile(build: Build) : Unit
@@ -31,8 +32,13 @@ class DefaultCompiler extends Compiler {
     build.sources.test.map(src => new Path(project, src)).map(javac.setSrcdir(_))
     
     val classpath = new Path(project)
-    classpath.setPath("example/libs")
+    val fileset = new FileSet()
+    fileset.setDir(new File("example/libs"))
+    fileset.setIncludes("*.jar")
+    classpath.addFileset(fileset)
     javac.setClasspath(classpath)
+    
+    javac.setDestdir(new File("example/target/classes"))
     
     javac
   }
