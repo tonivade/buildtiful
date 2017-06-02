@@ -14,7 +14,7 @@ trait Compiler {
 class DefaultCompiler extends Compiler {
   val project : AntProject = {
     val project = new AntProject()
-    project.setBaseDir(new File("example"));
+    project.setBaseDir(new File("example"))
     project.init() 
     project
   }
