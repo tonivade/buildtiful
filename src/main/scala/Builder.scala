@@ -25,8 +25,10 @@ object Builder {
 }
 
 object BuilderInterpreter {
-  import cats.{Id, Monad}
-  import cats.implicits._
+  import cats.Monad
+  import scala.util.Try
+  import scala.util.Failure
+  import scala.util.Success
   
   val parser = new YamlParser()
   val downloader = new IvyDownloader()
@@ -35,22 +37,23 @@ object BuilderInterpreter {
   val tester = new DefaultTester()
   val packager = new DefaultPackager()
   val deployer = new MavenDeployer()
-
-  implicit object BuilderInstance extends Builder[Id] {
-    def read(file: String) = parser.parse(file)
-    def download(build: Build) = downloader.download(build)
-    def clean(build: Build) = cleaner.clean(build)
-    def compile(build: Build) = compiler.compile(build)
-    def test(build: Build) = tester.test(build)
-    def makepkg(build: Build) = packager.makepkg(build)
-    def deploy(build: Build) = deployer.deploy(build)
+  
+  implicit object BuilderInstance extends Builder[Try] {
+    def read(file: String) = Try(parser.parse(file))
+    def download(build: Build) = Try(downloader.download(build))
+    def clean(build: Build) = Try(cleaner.clean(build))
+    def compile(build: Build) = Try(compiler.compile(build))
+    def test(build: Build) = Try(tester.test(build))
+    def makepkg(build: Build) = Try(packager.makepkg(build))
+    def deploy(build: Build) = Try(deployer.deploy(build))
   }
 }
 
 object BuilderProgram {
-  import cats.Monad
-  import cats.implicits._
   import Builder.Syntax._
+  import cats.Monad
+  import cats.syntax.functor._
+  import cats.syntax.flatMap._
 
   def build[P[_]: Builder: Monad](file: String): P[Unit] = {
     for {

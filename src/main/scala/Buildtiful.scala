@@ -2,6 +2,7 @@ package com.github.tonivade.buildtiful
 
 import BuilderInterpreter._
 import BuilderProgram._
+import cats.instances.try_._
 
 object Buildtiful {
   def main(args: Array[String]) {
