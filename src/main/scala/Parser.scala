@@ -14,9 +14,7 @@ trait Parser {
 class YamlParser extends Parser {
   def parse(file: String): Build = {
      val yamlString = Source.fromFile(file).mkString
-      val json = parser.parse(yamlString)
-      println(json)
-      // TODO: do not throw exceptions
-      json.leftMap(err => err: Error).flatMap(_.as[Build]).valueOr(throw _)
+     val json = parser.parse(yamlString)
+     json.leftMap(err => err: Error).flatMap(_.as[Build]).valueOr(throw _)
   }
 }

@@ -58,12 +58,12 @@ object BuilderProgram {
   def build[P[_]: Builder: Monad](file: String): P[Unit] = {
     for {
       build <- read(file)
-      _     <- clean(build)
-      _     <- download(build)
-      _     <- compile(build)
-      _     <- test(build)
-      _     <- makepkg(build)
-      _     <- deploy(build)
-    } yield ()
+      res   <- clean(build)
+      res   <- download(build)
+      res   <- compile(build)
+      res   <- test(build)
+      res   <- makepkg(build)
+      res   <- deploy(build)
+    } yield (res)
   }
 }
