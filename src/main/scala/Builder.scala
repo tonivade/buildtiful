@@ -14,21 +14,18 @@ object Builder {
   def apply[P[_]](implicit Builder: Builder[P]) = Builder
 
   object Syntax {
-    def read[P[_]](file: String)(implicit B: Builder[P]) = B.read(file)
-    def download[P[_]](build: Build)(implicit B: Builder[P]) = B.download(build)
-    def clean[P[_]](build: Build)(implicit B: Builder[P]) = B.clean(build)
-    def compile[P[_]](build: Build)(implicit B: Builder[P]) = B.compile(build)
-    def test[P[_]](build: Build)(implicit B: Builder[P]) = B.test(build)
-    def makepkg[P[_]](build: Build)(implicit B: Builder[P]) = B.makepkg(build)
-    def deploy[P[_]](build: Build)(implicit B: Builder[P]) = B.deploy(build)
+    def read[P[_]](file: String)(implicit B: Builder[P]): P[Build] = B.read(file)
+    def download[P[_]](build: Build)(implicit B: Builder[P]): P[Unit] = B.download(build)
+    def clean[P[_]](build: Build)(implicit B: Builder[P]): P[Unit] = B.clean(build)
+    def compile[P[_]](build: Build)(implicit B: Builder[P]): P[Unit] = B.compile(build)
+    def test[P[_]](build: Build)(implicit B: Builder[P]): P[Unit] = B.test(build)
+    def makepkg[P[_]](build: Build)(implicit B: Builder[P]): P[Unit] = B.makepkg(build)
+    def deploy[P[_]](build: Build)(implicit B: Builder[P]): P[Unit] = B.deploy(build)
   }
 }
 
 object BuilderInterpreter {
-  import cats.Monad
   import scala.util.Try
-  import scala.util.Failure
-  import scala.util.Success
   
   val parser = new YamlParser()
   val downloader = new IvyDownloader()
