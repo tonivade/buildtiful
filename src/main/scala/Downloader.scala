@@ -21,7 +21,7 @@ class IvyDownloader extends Downloader {
 
   val ivy: Ivy = {
     val ivySettings = new IvySettings()
-    ivySettings.setDefaultCache(new File("example/ivy/cache"))
+    ivySettings.setDefaultCache(new File(Config.baseDir + "/ivy/cache"))
     
     val resolver = new IBiblioResolver()
     resolver.setM2compatible(true)
@@ -34,7 +34,7 @@ class IvyDownloader extends Downloader {
     Ivy.newInstance(ivySettings)
   }
   
-  val target = new File("example/libs")
+  val target = new File(Config.baseDir + "/libs")
   
   def download(build: Build) {
     println("download")

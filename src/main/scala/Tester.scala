@@ -2,8 +2,6 @@ package com.github.tonivade.buildtiful
 
 import java.io.File
 
-
-
 import org.apache.tools.ant.{ Project => AntProject }
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.SummaryAttribute
@@ -20,7 +18,7 @@ trait Tester {
 class DefaultTester extends Tester {
   val project : AntProject = {
     val project = new AntProject()
-    project.setBaseDir(new File("example"))
+    project.setBaseDir(new File(Config.baseDir))
     project.init() 
     project
   }
@@ -37,16 +35,16 @@ class DefaultTester extends Tester {
     val classpath = junit.createClasspath();
     
     val fileset = new FileSet()
-    fileset.setDir(new File("example/libs"))
+    fileset.setDir(new File(Config.baseDir + "/libs"))
     fileset.setIncludes("*.jar")
     classpath.addFileset(fileset)
-    classpath.add(new Path(project, "example/target/classes"))
+    classpath.add(new Path(project, Config.baseDir + "/target/classes"))
     
     val tests = junit.createBatchTest()
     tests.setFork(true)
-    tests.setTodir(new File("example/target/report"))
+    tests.setTodir(new File(Config.baseDir + "/target/report"))
     val testsFileSet = new FileSet()
-    testsFileSet.setDir(new File("example/target/classes"))
+    testsFileSet.setDir(new File(Config.baseDir + "/target/classes"))
     testsFileSet.setIncludes("**/*Test.class")
     tests.addFileSet(testsFileSet)
     

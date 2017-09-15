@@ -14,7 +14,7 @@ trait Compiler {
 class DefaultCompiler extends Compiler {
   val project : AntProject = {
     val project = new AntProject()
-    project.setBaseDir(new File("example"))
+    project.setBaseDir(new File(Config.baseDir))
     project.init() 
     project
   }
@@ -33,12 +33,12 @@ class DefaultCompiler extends Compiler {
     
     val classpath = new Path(project)
     val fileset = new FileSet()
-    fileset.setDir(new File("example/libs"))
+    fileset.setDir(new File(Config.baseDir + "/libs"))
     fileset.setIncludes("*.jar")
     classpath.addFileset(fileset)
     javac.setClasspath(classpath)
     
-    javac.setDestdir(new File("example/target/classes"))
+    javac.setDestdir(new File(Config.baseDir + "/target/classes"))
     
     javac
   }
