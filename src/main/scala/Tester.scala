@@ -7,7 +7,6 @@ import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.SummaryAttribute
 import org.apache.tools.ant.types.FileSet
 import org.apache.tools.ant.types.Path
-import com.sun.javafx.scene.control.FormatterAccessor
 import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement
 import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement.TypeAttribute
 
