@@ -36,13 +36,13 @@ object BuilderInterpreter {
 
   def builderInterpreter: BuildEffect ~> Try = {
     new (BuildEffect ~> Try) {
-        val parser = new YamlParser()
-        val downloader = new IvyDownloader()
-        val cleaner = new DefaultCleaner()
-        val compiler = new DefaultCompiler()
-        val tester = new DefaultTester()
-        val packager = new DefaultPackager()
-        val deployer = new MavenDeployer()
+      val parser = new YamlParser()
+      val downloader = new IvyDownloader()
+      val cleaner = new DefaultCleaner()
+      val compiler = new DefaultCompiler()
+      val tester = new DefaultTester()
+      val packager = new DefaultPackager()
+      val deployer = new MavenDeployer()
 
       def apply[A](fa: BuildEffect[A]): Try[A] =
         fa match {

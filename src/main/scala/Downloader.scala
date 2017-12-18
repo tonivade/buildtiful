@@ -13,6 +13,8 @@ import org.apache.ivy.core.report.ResolveReport
 import org.apache.ivy.core.module.descriptor.DefaultDependencyDescriptor
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor
 
+import Config._
+
 trait Downloader {
   def download(build: Build) : Unit
 }
@@ -21,7 +23,7 @@ class IvyDownloader extends Downloader {
 
   val ivy: Ivy = {
     val ivySettings = new IvySettings()
-    ivySettings.setDefaultCache(new File(Config.baseDir + "/ivy/cache"))
+    ivySettings.setDefaultCache(ivycache)
     
     val resolver = new IBiblioResolver()
     resolver.setM2compatible(true)
@@ -34,10 +36,10 @@ class IvyDownloader extends Downloader {
     Ivy.newInstance(ivySettings)
   }
   
-  val target = new File(Config.baseDir + "/libs")
-  
   def download(build: Build) {
     println("download")
+    
+    if (!libs.exists()) libs.mkdirs()
 
     module(build).map(resolve(_)).map(retrieve(_))
   }
@@ -93,7 +95,7 @@ class IvyDownloader extends Downloader {
     
     ivy.retrieve(
         module.getModuleRevisionId(),
-        target.getAbsolutePath() + "/[artifact](-[classifier]).[ext]",
+        libs.getAbsolutePath() + "/[artifact](-[classifier]).[ext]",
         options)
   }
 }

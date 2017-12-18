@@ -2,6 +2,8 @@ package com.github.tonivade.buildtiful
 
 import java.io.File
 
+import Config._
+
 trait Cleaner {
   def clean(build: Build): Unit
 }
@@ -10,8 +12,6 @@ class DefaultCleaner extends Cleaner {
   def clean(build: Build) {
     println("clean")
     
-    val target = new File(Config.baseDir + "/target")
-    
-    if (target.exists()) target.delete();
+    if (target.exists()) target.delete()
   }
 }
