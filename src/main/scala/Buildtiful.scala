@@ -8,7 +8,7 @@ import scala.util.Try
 object Buildtiful {
   def main(args: Array[String]) {
     args.headOption match {
-      case Some(file) => println(build(file))
+      case Some(file) => println(build(file).foldMap(builderInterpreter))
       case _ => println("invalid arguments")
     }
   }

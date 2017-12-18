@@ -14,3 +14,12 @@ case class CompilationError(error: String) extends BuildError
 case class TestError(error: String) extends BuildError
 case class PackageError(error: String) extends BuildError
 case class DeployError(error: String) extends BuildError
+
+sealed trait BuildEffect[A]
+case class ParseProject(file: String) extends BuildEffect[Build]
+case class CleanProject(build: Build) extends BuildEffect[Unit]
+case class DownloadDependencies(build: Build) extends BuildEffect[Unit]
+case class CompileProject(build: Build) extends BuildEffect[Unit]
+case class RunTests(build: Build) extends BuildEffect[Unit]
+case class MakePackage(build: Build) extends BuildEffect[Unit]
+case class DeployPackage(build: Build) extends BuildEffect[Unit]
