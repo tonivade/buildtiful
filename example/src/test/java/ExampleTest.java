@@ -8,7 +8,7 @@ import org.junit.Test;
 public class ExampleTest 
 {
 	@Test
-	public void sayHelloTest()
+	public void testSayHello()
 	{
 		assertThat(new Example().sayHello("Workd!"), equalTo("Hello World!"));
 	}

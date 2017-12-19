@@ -7,7 +7,7 @@ trait Tester {
 }
 
 class AntTester extends Tester {
-  import AntHelper._
+  import AntTasks._
   
   def test(build: Build) {
     println("test")

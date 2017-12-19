@@ -7,7 +7,7 @@ trait Compiler {
 }
 
 class AntCompiler extends Compiler {
-  import AntHelper._
+  import AntTasks._
   
   def compile(build: Build) {
     println("compile")

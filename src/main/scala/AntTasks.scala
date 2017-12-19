@@ -1,7 +1,7 @@
 package com.github.tonivade.buildtiful
 
 import org.apache.tools.ant.{ Project => AntProject }
-import org.apache.tools.ant.Task
+import org.apache.tools.ant.{ Task => AntTask }
 import org.apache.tools.ant.taskdefs.Javac
 import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement
 import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement.TypeAttribute
@@ -12,7 +12,7 @@ import org.apache.tools.ant.types.Path
 
 import Config._
 
-object AntHelper {
+object AntTasks {
     
   val project : AntProject = {
     val project = new AntProject()
@@ -28,7 +28,8 @@ object AntHelper {
     build.sources.test.map(src => new Path(project, src)).map(javac.setSrcdir(_))
     javac.setClasspath(classpath(build))
     javac.setDestdir(classes)
-    javac
+    
+    () => javac.execute()
   }
   
     
@@ -44,7 +45,7 @@ object AntHelper {
     fileset.setDir(libs)
     fileset.setIncludes("*.jar")
     classpath.addFileset(fileset)
-    classpath.add(new Path(project, path("/target/classes")))
+    classpath.add(new Path(project, "target/classes"))
     
     val tests = junit.createBatchTest()
     tests.setFork(false)
@@ -59,7 +60,8 @@ object AntHelper {
     formatterType.setValue("plain")
     formatter.setType(formatterType)
     junit.addFormatter(formatter)
-    junit
+    
+    () => junit.execute()
   }
   
   def classpath(build: Build): Path = {

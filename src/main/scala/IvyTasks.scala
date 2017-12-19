@@ -15,7 +15,7 @@ import org.apache.ivy.core.module.descriptor.DependencyDescriptor
 
 import Config._
 
-object IvyHelper {
+object IvyTasks {
   
   val ivy: Ivy = {
     val ivySettings = new IvySettings()
@@ -30,6 +30,10 @@ object IvyHelper {
     ivySettings.setDefaultResolver(resolver.getName())
 
     Ivy.newInstance(ivySettings)
+  }
+  
+  def ivyDownload(build: Build): Task = {
+    () => module(build).map(resolve(_)).map(retrieve(_))
   }
   
   def module(build: Build) : Option[ModuleDescriptor] = {

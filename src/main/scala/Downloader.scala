@@ -7,15 +7,13 @@ trait Downloader {
 }
 
 class IvyDownloader extends Downloader {
-  import IvyHelper._
+  import IvyTasks._
   
   def download(build: Build) {
     println("download")
     
     if (!libs.exists()) libs.mkdirs()
 
-    module(build).map(resolve(_)).map(retrieve(_))
+    ivyDownload(build).execute()
   }
-  
- 
 }

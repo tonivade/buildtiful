@@ -23,3 +23,9 @@ case class CompileProject(build: Build) extends BuildEffect[Unit]
 case class RunTests(build: Build) extends BuildEffect[Unit]
 case class MakePackage(build: Build) extends BuildEffect[Unit]
 case class DeployPackage(build: Build) extends BuildEffect[Unit]
+
+trait Task {
+  def execute()
+}
+
+
