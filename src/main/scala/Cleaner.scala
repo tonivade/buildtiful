@@ -1,6 +1,6 @@
 package com.github.tonivade.buildtiful
 
-import java.io.File
+import scala.reflect.io.Path
 
 import Config._
 
@@ -12,6 +12,6 @@ class DefaultCleaner extends Cleaner {
   def clean(build: Build) {
     println("clean")
     
-    if (target.exists()) target.delete()
+    Path(target).deleteRecursively()
   }
 }

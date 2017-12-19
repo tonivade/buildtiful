@@ -39,8 +39,8 @@ object BuilderInterpreter {
       val parser = new YamlParser()
       val downloader = new IvyDownloader()
       val cleaner = new DefaultCleaner()
-      val compiler = new DefaultCompiler()
-      val tester = new DefaultTester()
+      val compiler = new AntCompiler()
+      val tester = new AntTester()
       val packager = new DefaultPackager()
       val deployer = new MavenDeployer()
 
