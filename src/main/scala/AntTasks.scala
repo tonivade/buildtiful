@@ -7,6 +7,7 @@ import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement
 import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement.TypeAttribute
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.SummaryAttribute
+import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.ForkMode
 import org.apache.tools.ant.types.FileSet
 import org.apache.tools.ant.types.Path
 
@@ -35,6 +36,9 @@ object AntTasks {
     
   def junit(build: Build): Task = {
     val junit = new JUnitTask()
+    junit.setShowOutput(true)
+    junit.setLogFailedTests(true)
+    junit.setFork(true)
     val printsummary = new SummaryAttribute();
     printsummary.setValue("true")
     junit.setPrintsummary(printsummary)
@@ -48,7 +52,6 @@ object AntTasks {
     classpath.add(new Path(project, "target/classes"))
     
     val tests = junit.createBatchTest()
-    tests.setFork(false)
     tests.setTodir(report)
     val testsFileSet = new FileSet()
     testsFileSet.setDir(file("/target/classes"))

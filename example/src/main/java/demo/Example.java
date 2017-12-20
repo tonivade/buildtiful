@@ -1,4 +1,4 @@
-package test;
+package demo;
 
 public class Example 
 {

@@ -13,7 +13,7 @@ object Config {
 
   val target: File = file("/target")
   val libs: File = file("/target/libs")
-  val cache: File = file("/target/cache")
+  val cache: File = file("/ivy/cache")
   val classes: File = file("/target/classes")
   val report: File = file("/target/report")
 }
